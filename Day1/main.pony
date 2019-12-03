@@ -29,14 +29,28 @@ use "stringExt"
 
 
 actor FuelCounterUpper
-	var fuelRequired:U64 = 0
+	var fuelRequired:I64 = 0
 	
-	be addModule(mass:U64) =>
+	fun fuelNeededForMass(mass:I64):I64 =>
 		// find the fuel required for a module, take its mass, divide by three, round down, and subtract 2.
-		fuelRequired = fuelRequired + ((mass / 3) - 2)
+		var fuel = ((mass / 3) - 2)
+		if fuel < 0 then
+			fuel = 0
+		end
+		fuel
 	
-	be printFuel(env:Env) =>
-		env.out.print("Fuel required: " + fuelRequired.string())
+	be addModule(mass:I64) =>
+		var fuelRequiredForModule = fuelNeededForMass(mass)
+		
+		fuelRequired = fuelRequired + fuelRequiredForModule
+		
+		while fuelRequiredForModule > 0 do
+			fuelRequiredForModule = fuelNeededForMass(fuelRequiredForModule)
+			fuelRequired = fuelRequired + fuelRequiredForModule
+		end
+		
+	be printFuel(label:String, env:Env) =>
+		env.out.print(label + "fuel required is " + fuelRequired.string())
 		
 
 actor Main
@@ -49,12 +63,13 @@ actor Main
 		
 			for line in lines.values() do
 				try
-					fcu.addModule(line.u64()?)
+					fcu.addModule(line.i64()?)
 				else
 					env.out.print("Unable to convert mass for module to U64 ( line was [" + line + "])")
 				end
 			end
-			fcu.printFuel(env)
+			
+			fcu.printFuel("Part 2: ", env)
 		else
 			env.out.print("Unable to read input.txt")
 		end
