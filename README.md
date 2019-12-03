@@ -1,4 +1,4 @@
 # AoC-2019
 Advent of Code 2019, in Pony
 
-**WARNING** While this code might work standard Pony, it is designed to take full advantage of the changes I have introduced in [my fork of Pony](https://github.com/KittyMac/ponyc/tree/roc_master). Most of the changes to Pony involve improvements to the Pony runtime. The list of these changes are documented in my [pony.problems](https://github.com/KittyMac/pony.problems) respository.
+**WARNING** While this code might work standard Pony, it might take advantage of customizations I've made in [my fork of Pony](https://github.com/KittyMac/ponyc/tree/roc_master). It might also rely on pony "packages" I've written, which the bundle.json just points to locally instead of the github repos.  If you actually want to compile these, you can find those package on this github under the same name ( for example, https://github.com/KittyMac/pony.stringExt )
