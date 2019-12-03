@@ -1,5 +1,6 @@
 use "fileExt"
 use "stringExt"
+use "collections"
 
 /*
  * --- Day 2: 1202 Program Alarm ---
@@ -124,6 +125,13 @@ actor Intcode
 			env.out.print(StringExt.format("Error: test failed, expected [%s] but got [%s]", expectedOutput, computedOutput))
 		end
 	
+	be testResult(noun:USize, verb:USize, expectedResult:USize) =>
+		try
+			if expectedResult == program(0)? then
+				env.out.print(StringExt.format("Found expected result, noun = %s and verb = %s, answer is %s", noun, verb, (100 * noun) + verb ))
+			end
+		end
+	
 	be print() =>
 		env.out.print("Output: " + (",".join(program.values())))
 		
@@ -154,15 +162,25 @@ actor Main
 		
 		// Do the actual problem:
 		try
-			computer.load(recover FileExt.fileToString("input.txt")? end)
+			
 			
 			// Once you have a working computer, the first step is to restore the gravity assist program (your puzzle input) to the "1202 program alarm" state it had just before the last computer caught fire. 
 			// To do this, before running the program, replace position 1 with the value 12 and replace position 2 with the value 2. What value is left at position 0 after the program halts?
-			computer.replace(1, 12)
-			computer.replace(2, 2)
 			
-			computer.execute()
-			computer.print()
+			// Part 2: Determin which noun (position 1) and verb (position 2) values make the program resolve to 19690720
+			for noun in Range[USize](0,100) do
+				for verb in Range[USize](0,100) do
+					computer.load(recover FileExt.fileToString("input.txt")? end)
+					
+					computer.replace(1, noun)
+					computer.replace(2, verb)
+					
+					computer.execute()
+					computer.testResult(noun, verb, 19690720)
+				end
+			end
+			
+			//computer.print()
 		else
 			env.out.print("Error: unable to load file input.txt")
 		end
